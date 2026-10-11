@@ -1,0 +1,32 @@
+{
+  "name": "poct-cortisol-station",
+  "productName": "POCT 皮质醇检测工作站",
+  "version": "1.0.0",
+  "private": true,
+  "description": "基于 Electron 的 POCT 皮质醇检测工具：串口扫描/波特率设置、检测收发、空白校准、定时采集、SQLite 历史记录",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "smoke": "electron scripts/smoke.js",
+    "uicheck": "electron scripts/uicheck.js",
+    "shot": "electron scripts/shot.js"
+  },
+  "keywords": [
+    "poct",
+    "cortisol",
+    "electron",
+    "serialport",
+    "sqlite"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "serialport": "^13.0.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.2.0",
+    "electron": "^44.4.5"
+  }
+}

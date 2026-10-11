@@ -1,0 +1,17 @@
+{
+  "name": "poct-cortisol-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "description": "POCT 皮质醇检测工具工作区：pc（Electron 桌面版）+ mobile（React 手机版）",
+  "scripts": {
+    "pc": "npm --prefix pc start",
+    "pc:dev": "npm --prefix pc run dev",
+    "pc:smoke": "npm --prefix pc run smoke",
+    "pc:uicheck": "npm --prefix pc run uicheck",
+    "pc:install": "npm --prefix pc install",
+    "mobile": "npm --prefix mobile run dev",
+    "mobile:build": "npm --prefix mobile run build",
+    "mobile:preview": "npm --prefix mobile run preview",
+    "mobile:install": "npm --prefix mobile install"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "poct-cortisol-mobile",
+  "productName": "POCT 皮质醇检测（手机版）",
+  "private": true,
+  "version": "1.0.0",
+  "description": "POCT 皮质醇检测手机版：React + Web Serial API，支持串口连接、检测收发、空白校准、历史记录",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "poct",
+    "cortisol",
+    "react",
+    "web-serial",
+    "vite"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "^5.8.0",
+    "vite": "^7.0.0"
+  }
+}

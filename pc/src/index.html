@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    />
+    <title>POCT 皮质醇检测工作站</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <img
+          class="brand-logo"
+          src="assets/logo-green.svg"
+          alt="logo"
+          draggable="false"
+        />
+        <div class="brand-divider"></div>
+        <div>
+          <h1>皮质醇检测工作站</h1>
+          <p class="sub">空白测试 · 样品测试 · 自动扣除空白 · SQLite 历史记录</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn primary sm" id="btn-open-settings">设置</button>
+        <button
+          class="btn ghost sm"
+          id="btn-lang"
+          title="切换语言 / Switch language"
+          data-no-i18n
+        >
+          EN
+        </button>
+        <span class="badge" id="status-badge">未连接</span>
+        <span class="muted" id="status-detail">请选择串口并连接</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <main class="main">
+        <nav class="tabs">
+          <button class="tab active" data-tab="test">测试数据</button>
+          <button class="tab" data-tab="history">历史记录</button>
+        </nav>
+
+        <!-- ============================ 测试数据 ============================ -->
+        <section class="tab-panel active" id="tab-test">
+          <div class="panel test-panel">
+            <div class="panel-title">
+              测试数据
+              <span class="chip" id="session-state">空闲</span>
+            </div>
+            <p class="hint">
+              测试流程：① 点击「空白测试」，按「设置」中的采集参数自动采集空白并记录参照值；②
+              空白测试完成后「样品测试」按钮可用，点击后自动扣除空白参照值并保存样本记录。
+            </p>
+            <div class="test-buttons">
+              <button class="test-card blank" id="btn-blank-test">
+                <span class="test-ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.5 3h5" />
+                    <path d="M10.5 3v5.2L5.6 16.9A2.4 2.4 0 0 0 7.7 20.5h8.6a2.4 2.4 0 0 0 2.1-3.6L13.5 8.2V3" />
+                    <path d="M7.5 14.5h9" />
+                  </svg>
+                </span>
+                <span class="test-body">
+                  <span class="test-name">空白测试</span>
+                  <span class="test-desc">自动采集空白，记录参照值</span>
+                </span>
+              </button>
+              <button class="test-card sample" id="btn-sample-test" disabled>
+                <span class="test-ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3.5s5.8 6.2 5.8 10.3a5.8 5.8 0 0 1-11.6 0C6.2 9.7 12 3.5 12 3.5z" />
+                    <path d="M9.5 14.5a2.6 2.6 0 0 0 2.4 2.4" />
+                  </svg>
+                </span>
+                <span class="test-body">
+                  <span class="test-name">样品测试</span>
+                  <span class="test-desc">扣除空白参照，保存样本记录</span>
+                </span>
+                <span class="test-lock" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2" />
+                    <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+                  </svg>
+                </span>
+              </button>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" id="session-progress"></div>
+            </div>
+            <div class="row test-progress-row">
+              <button class="btn danger" id="btn-session-stop" disabled>
+                停止采集
+              </button>
+              <span class="hint" id="session-hint"
+                >点击「空白测试」按钮开始采集</span
+              >
+            </div>
+            <div class="kv-strip">
+              <div class="kv">
+                <span>空白参照值</span><b id="blank-ref-value">未测试</b>
+              </div>
+              <div class="kv">
+                <span>空白样本数</span><b id="blank-ref-n">0</b>
+              </div>
+            </div>
+
+            <details class="workflow-details">
+              <summary>查看测试原理示意图</summary>
+              <img
+                class="workflow-img"
+                src="assets/workflow.jpg"
+                alt="测试原理示意图：校准测试 → 标准曲线拟合 → 空白测试 → 样品测试，适配体与皮质醇结合程度决定荧光淬灭强弱"
+                draggable="false"
+              />
+            </details>
+          </div>
+
+          <div class="split">
+            <div class="panel">
+              <div class="panel-title">
+                实时数据流
+                <span class="chip" id="log-count">0</span>
+                <div class="panel-actions">
+                  <button class="btn ghost sm" id="btn-log-pause">暂停</button>
+                  <button class="btn ghost sm" id="btn-log-clear">清空</button>
+                  <button class="btn ghost sm" id="btn-log-export">
+                    导出日志
+                  </button>
+                </div>
+              </div>
+              <div class="log" id="log-view"></div>
+            </div>
+
+            <div class="col">
+              <div class="panel">
+                <div class="panel-title">最近测量结果</div>
+                <div class="result-value">
+                  <input
+                    id="result-value"
+                    type="text"
+                    class="big-input"
+                    placeholder="--"
+                  />
+                  <span class="unit" id="result-unit">a.u.</span>
+                </div>
+                <div class="result-meta" id="result-meta">尚未收到数据</div>
+
+                <details class="raw-details">
+                  <summary>原始返回 / HEX</summary>
+                  <div class="kv">
+                    <span>原始返回</span>
+                    <pre id="result-raw">--</pre>
+                  </div>
+                  <div class="kv">
+                    <span>HEX</span>
+                    <pre id="result-hex">--</pre>
+                  </div>
+                </details>
+                <div class="kv">
+                  <span>空白参照值</span><b id="result-blank-ref">--</b>
+                </div>
+                <div class="kv">
+                  <span>净信号（扣除空白）</span><b id="result-net">--</b>
+                </div>
+                <div class="kv">
+                  <span>换算浓度</span><b id="result-conc">--</b>
+                </div>
+
+                <label class="field" style="margin-top: 10px">
+                  <span class="label">备注 / 样本编号</span>
+                  <input
+                    id="save-note"
+                    type="text"
+                    placeholder="备注 / 样本编号"
+                  />
+                </label>
+              </div>
+
+              <div class="panel">
+                <div class="panel-title">
+                  最近记录
+                  <div class="panel-actions">
+                    <button class="btn ghost sm" id="btn-recent-refresh">
+                      刷新
+                    </button>
+                  </div>
+                </div>
+                <div class="recent-list" id="recent-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 历史记录 -->
+        <section class="tab-panel" id="tab-history">
+          <div class="panel">
+            <div class="panel-title">
+              历史检测记录
+              <span class="chip" id="history-count-chip">0</span>
+              <div class="panel-actions">
+                <button class="btn ghost sm" id="btn-history-refresh">
+                  刷新
+                </button>
+              </div>
+            </div>
+
+            <div class="filters">
+              <select id="h-category">
+                <option value="all" selected>全部类别</option>
+                <option value="sample">样本检测</option>
+                <option value="blank">空白（仅缓冲液）</option>
+                <option value="aptamer_blank">空白（适配体+染料）</option>
+              </select>
+              <input type="date" id="h-from" />
+              <span class="muted">至</span>
+              <input type="date" id="h-to" />
+              <input
+                id="h-keyword"
+                type="text"
+                placeholder="备注 / 原始数据关键词"
+                style="min-width: 200px"
+              />
+              <select id="h-limit">
+                <option value="50">50 条/页</option>
+                <option value="100" selected>100 条/页</option>
+                <option value="200">200 条/页</option>
+                <option value="500">500 条/页</option>
+              </select>
+              <button class="btn primary" id="btn-query">查询</button>
+              <button class="btn" id="btn-export">导出 CSV</button>
+              <button class="btn ghost" id="btn-export-all">导出全部</button>
+              <button class="btn danger" id="btn-clear">清空筛选结果</button>
+            </div>
+
+            <div class="stat-strip" id="history-stats"></div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 56px">ID</th>
+                    <th style="width: 165px">时间</th>
+                    <th style="width: 130px">类别</th>
+                    <th style="width: 92px">数值</th>
+                    <th style="width: 62px">单位</th>
+                    <th>原始返回</th>
+                    <th style="width: 130px">串口/波特率</th>
+                    <th style="width: 70px">来源</th>
+                    <th style="width: 130px">备注</th>
+                    <th style="width: 56px">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="history-tbody"></tbody>
+              </table>
+            </div>
+
+            <div class="pager">
+              <button class="btn ghost sm" id="btn-prev">上一页</button>
+              <span id="page-info" class="muted">0 / 0</span>
+              <button class="btn ghost sm" id="btn-next">下一页</button>
+              <span class="spacer"></span>
+              <span class="hint" id="history-total"></span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ============================ 设置（二级菜单） ============================ -->
+    <div class="modal-mask hidden" id="settings-modal">
+      <div class="modal-card settings-modal">
+        <div class="modal-head">
+          <h2>设置</h2>
+          <button class="btn ghost sm" id="btn-close-settings">关闭</button>
+        </div>
+
+        <div class="settings-body">
+          <div class="split">
+            <div class="col">
+              <!-- 串口连接 -->
+              <div class="panel">
+                <div class="panel-title">
+                  串口连接
+                  <span class="chip" id="port-count">未扫描</span>
+                </div>
+
+                <label class="field">
+                  <span class="label">串口设备</span>
+                  <div class="row tight">
+                    <select id="port-select" class="grow"></select>
+                    <button class="btn ghost" id="btn-refresh-ports">扫描</button>
+                  </div>
+                </label>
+                <div class="hint" id="port-hint">
+                  点击「扫描」发现可用串口设备
+                </div>
+
+                <div class="divider"></div>
+
+                <label class="field">
+                  <span class="label">波特率</span>
+                  <input
+                    id="baud-rate"
+                    type="text"
+                    list="baud-list"
+                    value="115200"
+                  />
+                </label>
+                <datalist id="baud-list">
+                  <option value="1200"></option>
+                  <option value="2400"></option>
+                  <option value="4800"></option>
+                  <option value="9600"></option>
+                  <option value="19200"></option>
+                  <option value="38400"></option>
+                  <option value="57600"></option>
+                  <option value="115200"></option>
+                  <option value="230400"></option>
+                  <option value="460800"></option>
+                  <option value="921600"></option>
+                </datalist>
+
+                <div class="grid-3">
+                  <label class="field">
+                    <span class="label">数据位</span>
+                    <select id="data-bits">
+                      <option value="8" selected>8</option>
+                      <option value="7">7</option>
+                      <option value="6">6</option>
+                      <option value="5">5</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label">停止位</span>
+                    <select id="stop-bits">
+                      <option value="1" selected>1</option>
+                      <option value="2">2</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label">校验位</span>
+                    <select id="parity">
+                      <option value="none" selected>无</option>
+                      <option value="even">偶校验</option>
+                      <option value="odd">奇校验</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="grid-2">
+                  <label class="field">
+                    <span class="label">接收分帧</span>
+                    <select id="delimiter">
+                      <option value="" selected>按空闲时间</option>
+                      <option value="&#10;">换行 \n</option>
+                      <option value="&#13;">回车 \r</option>
+                      <option value="&#13;&#10;">回车换行 \r\n</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label">空闲分帧(ms)</span>
+                    <input
+                      id="frame-delay"
+                      type="number"
+                      min="20"
+                      step="10"
+                      value="120"
+                    />
+                  </label>
+                </div>
+
+                <button class="btn primary block" id="btn-toggle-connect">
+                  连接串口
+                </button>
+
+                <div class="status-card">
+                  <div class="status-row">
+                    <span>连接状态</span><b id="conn-state">未连接</b>
+                  </div>
+                  <div class="status-row">
+                    <span>当前端口</span><b id="conn-port">--</b>
+                  </div>
+                  <div class="status-row">
+                    <span>接收 / 发送</span><b id="conn-traffic">0 / 0 字节</b>
+                  </div>
+                  <div class="status-row">
+                    <span>定时发送</span><b id="conn-timed">空闲</b>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 采集与发送 -->
+              <div class="panel">
+                <div class="panel-title">采集与发送</div>
+                <label class="field">
+                  <span class="label">发送数据（任意内容）</span>
+                  <input id="payload" type="text" value="READ" />
+                </label>
+                <div class="grid-2">
+                  <label class="field">
+                    <span class="label">编码</span>
+                    <select id="encoding">
+                      <option value="ascii" selected>ASCII / 文本</option>
+                      <option value="hex">HEX 字节</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label">发送追加</span>
+                    <select id="terminator">
+                      <option value="none">不追加</option>
+                      <option value="lf">换行 \n</option>
+                      <option value="cr">回车 \r</option>
+                      <option value="crlf" selected>回车换行 \r\n</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="grid-3">
+                  <label class="field">
+                    <span class="label">响应超时(ms)</span>
+                    <input
+                      id="timeout"
+                      type="number"
+                      min="50"
+                      step="50"
+                      value="1500"
+                    />
+                  </label>
+                  <label class="field">
+                    <span class="label">定时间隔(ms)</span>
+                    <input
+                      id="interval"
+                      type="number"
+                      min="50"
+                      step="50"
+                      value="1000"
+                    />
+                  </label>
+                  <label class="field">
+                    <span class="label">定时次数</span>
+                    <input
+                      id="times"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value="5"
+                    />
+                  </label>
+                </div>
+
+                <div class="row">
+                  <label class="switch"
+                    ><input type="checkbox" id="expect-response" checked /><span
+                      >等待设备返回</span
+                    ></label
+                  >
+                  <label class="switch"
+                    ><input type="checkbox" id="auto-save" /><span
+                      >自动保存检测结果</span
+                    ></label
+                  >
+                </div>
+                <label class="switch" style="margin-top: 4px"
+                  ><input type="checkbox" id="log-frames-only" /><span
+                    >日志仅显示解析帧</span
+                  ></label
+                >
+
+                <div class="row" style="margin-top: 8px">
+                  <button class="btn primary" id="btn-send">发送并读取</button>
+                  <button class="btn" id="btn-send-only">仅发送</button>
+                  <button class="btn accent" id="btn-timed">定时发送</button>
+                  <button class="btn danger" id="btn-stop" disabled>停止</button>
+                </div>
+
+                <div class="chips" id="quick-payloads"></div>
+              </div>
+            </div>
+
+            <div class="col">
+              <!-- 测量与换算 -->
+              <div class="panel">
+                <div class="panel-title">测量与换算</div>
+                <div class="grid-2">
+                  <label class="field">
+                    <span class="label">信号单位</span>
+                    <input id="set-unit" type="text" placeholder="a.u." />
+                  </label>
+                  <label class="field">
+                    <span class="label">校准参照窗口（最近 N 次均值）</span>
+                    <input
+                      id="set-calib-window"
+                      type="number"
+                      min="1"
+                      max="50"
+                      step="1"
+                    />
+                  </label>
+                </div>
+                <label class="switch" style="margin-bottom: 10px">
+                  <input type="checkbox" id="set-curve-enabled" /><span
+                    >启用标准曲线换算浓度</span
+                  >
+                </label>
+                <div class="grid-3">
+                  <label class="field">
+                    <span class="label">斜率 k</span>
+                    <input id="set-curve-slope" type="number" step="any" />
+                  </label>
+                  <label class="field">
+                    <span class="label">截距 b</span>
+                    <input id="set-curve-intercept" type="number" step="any" />
+                  </label>
+                  <label class="field">
+                    <span class="label">浓度单位</span>
+                    <input
+                      id="set-curve-unit"
+                      type="text"
+                      placeholder="ng/mL"
+                    />
+                  </label>
+                </div>
+                <div class="hint">
+                  浓度 = (净信号 − 截距 b) ÷ 斜率 k，其中净信号 = 测量值 −
+                  空白参照值。
+                </div>
+              </div>
+
+              <!-- 连接默认值 -->
+              <div class="panel">
+                <div class="panel-title">连接默认值</div>
+                <div class="grid-3">
+                  <label class="field">
+                    <span class="label">默认波特率</span>
+                    <input id="set-baud" type="number" step="1" />
+                  </label>
+                  <label class="field">
+                    <span class="label">默认响应超时(ms)</span>
+                    <input id="set-timeout" type="number" step="50" />
+                  </label>
+                  <label class="field">
+                    <span class="label">默认空闲分帧(ms)</span>
+                    <input id="set-frame-delay" type="number" step="10" />
+                  </label>
+                </div>
+                <div class="row">
+                  <button class="btn primary" id="btn-save-settings">
+                    保存设置
+                  </button>
+                  <button class="btn ghost" id="btn-reset-settings">
+                    恢复默认
+                  </button>
+                  <span class="hint" id="settings-state"></span>
+                </div>
+              </div>
+
+              <!-- 数据存储 -->
+              <div class="panel">
+                <div class="panel-title">数据存储</div>
+                <div class="kv">
+                  <span>数据库</span><b id="info-db-path">--</b>
+                </div>
+                <div class="kv">
+                  <span>数据目录</span><b id="info-data-dir">--</b>
+                </div>
+                <div class="kv">
+                  <span>记录总数</span><b id="info-record-count">0</b>
+                </div>
+                <div class="row" style="margin-top: 10px">
+                  <button class="btn" id="btn-open-data-dir">
+                    打开数据目录
+                  </button>
+                  <button class="btn" id="btn-export-all-2">
+                    导出全部记录
+                  </button>
+                  <button class="btn danger" id="btn-clear-all">
+                    清空全部记录
+                  </button>
+                </div>
+                <div class="hint" style="margin-top: 8px">
+                  SQLite 采用 WAL 模式，数据实时落盘，可直接用 DB Browser for
+                  SQLite 等工具打开查看。
+                </div>
+              </div>
+
+              <!-- 关于 -->
+              <div class="panel about-panel">
+                <div class="panel-title">关于</div>
+                <img
+                  class="about-logo"
+                  src="assets/logo-green.svg"
+                  alt="logo"
+                  draggable="false"
+                />
+                <div class="kv">
+                  <span>应用版本</span><b id="info-version">--</b>
+                </div>
+                <div class="kv">
+                  <span>Electron</span><b id="info-electron">--</b>
+                </div>
+                <div class="kv"><span>Node</span><b id="info-node">--</b></div>
+                <div class="kv">
+                  <span>Chromium</span><b id="info-chrome">--</b>
+                </div>
+                <div class="kv">
+                  <span>平台</span><b id="info-platform">--</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/util.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/log.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/connection.js"></script>
+    <script src="js/console.js"></script>
+    <script src="js/detect.js"></script>
+    <script src="js/test.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

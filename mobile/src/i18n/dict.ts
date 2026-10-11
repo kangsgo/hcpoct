@@ -1,0 +1,363 @@
+/**
+ * 英文词条表（键 = 中文原文，值 = English）
+ * ---------------------------------------------------------------------------
+ * 沿用桌面版 src/js/i18n.js 的 gettext 风格：中文原文即翻译键。
+ * 带变量的文案用 {name} 占位符，调用 t("已连接 {port}", { port }) 替换。
+ * 未收录的文案会原样回退为中文，不会报错。
+ */
+
+export const EN: Record<string, string> = {
+  // ------------------------------------------------------------ 应用框架
+  "POCT 皮质醇检测工作站": "POCT Cortisol Detection Workstation",
+  皮质醇检测工作站: "Cortisol Detection Workstation",
+  "串口扫描 · 波特率设置 · 空白校准 · 定时发送 · 本地历史记录":
+    "Port scan · Baud rate · Blank calibration · Timed sending · Local history",
+  手机版: "Mobile",
+  未连接: "Not connected",
+  已连接: "Connected",
+  采集中: "Sampling",
+  请选择串口并连接: "Select a serial port and connect",
+
+  // ------------------------------------------------------------ 标签页
+  连接: "Connect",
+  检测: "Detect",
+  校准: "Calibrate",
+  历史: "History",
+  设置: "Settings",
+  实时检测: "Live detection",
+  空白校准: "Blank calibration",
+  历史记录: "History",
+
+  // ------------------------------------------------------------ 串口连接
+  串口连接: "Serial connection",
+  未扫描: "Not scanned",
+  串口设备: "Serial port",
+  扫描: "Scan",
+  刷新列表: "Refresh list",
+  添加设备: "Add device",
+  已授权设备: "Authorized devices",
+  "未发现已授权设备，首次使用请点击「添加设备」":
+    "No authorized device yet — tap “Add device” the first time",
+  "打开浏览器设备选择框，选择要连接的串口设备":
+    "Opens the browser device picker to choose a serial port",
+  波特率: "Baud rate",
+  数据位: "Data bits",
+  停止位: "Stop bits",
+  校验位: "Parity",
+  无: "None",
+  偶校验: "Even",
+  奇校验: "Odd",
+  接收分帧: "Frame delimiter",
+  按空闲时间: "By idle time",
+  "换行 \\n": "LF \\n",
+  "回车 \\r": "CR \\r",
+  "回车换行 \\r\\n": "CRLF \\r\\n",
+  "空闲分帧(ms)": "Idle gap (ms)",
+  连接串口: "Connect",
+  断开连接: "Disconnect",
+  连接状态: "Status",
+  当前端口: "Port",
+  "接收 / 发送": "RX / TX",
+  定时发送: "Timed sending",
+  空闲: "Idle",
+  快捷说明: "Quick guide",
+  "1. 手机通过 OTG 连接检测设备，点击「添加设备」选择串口。":
+    "1. Connect the device via OTG, then tap “Add device” to pick the serial port.",
+  "2. 设置波特率后点击「连接串口」。":
+    "2. Set the baud rate and tap “Connect”.",
+  "3. 在「检测」页发送任意数据，返回数据会自动解析为测量值。":
+    "3. Send any data on the Detect tab; the response is parsed into a measurement.",
+  "4. 先完成两种空白校准，再做样本检测，样本会自动扣除适配体空白。":
+    "4. Run both blank calibrations first; the aptamer blank is subtracted from samples automatically.",
+  "5. 数据保存在手机浏览器本地，可随时导出 CSV。":
+    "5. Data is stored locally in the phone browser and can be exported as CSV anytime.",
+  "当前浏览器不支持 Web Serial API，无法连接串口设备（Android Chrome / Edge 可用，iOS Safari 暂不支持）。你仍然可以在「检测」页手动录入数值并保存记录。":
+    "This browser does not support the Web Serial API, so serial devices cannot be connected (Android Chrome / Edge work; iOS Safari does not). You can still type values manually on the Detect tab and save records.",
+  "串口功能需要在 https 或 localhost 下打开页面":
+    "Serial access requires the page to be served over https or localhost",
+  "已授权 {n} 个串口设备": "{n} authorized serial device(s)",
+  已连接设备: "Connected device",
+  "已连接 {port} @ {baud} bps": "Connected {port} @ {baud} bps",
+  "连接失败：{msg}": "Connection failed: {msg}",
+  串口已断开: "Port closed",
+  请先添加并选择串口设备: "Add and select a serial port first",
+  请输入有效的波特率: "Enter a valid baud rate",
+  未选择串口设备: "No serial device selected",
+  选择串口设备失败: "Failed to add the serial device",
+  "当前浏览器不支持 Web Serial，无法连接串口":
+    "This browser does not support Web Serial — cannot open a port",
+  "串口设备已失效，请重新选择设备（浏览器不会长期保存授权）":
+    "The serial device is no longer valid — please pick it again (the browser does not keep authorization forever)",
+  波特率无效: "Invalid baud rate",
+  "打开串口失败：{msg}": "Failed to open the port: {msg}",
+  "串口不可写：请断开后重新连接设备":
+    "The port is not writable — disconnect and connect the device again",
+  "读取串口数据失败：{msg}": "Failed to read from the port: {msg}",
+  "读取串口列表失败：{msg}": "Failed to read the port list: {msg}",
+  设备已断开连接: "Device disconnected",
+  设备已断开: "Device disconnected",
+  串口不可读: "Port is not readable",
+  "串口未打开，请先选择串口并连接":
+    "The serial port is not open — select and connect a port first",
+  发送内容为空: "Send data is empty",
+  "HEX 数据为空": "HEX data is empty",
+  "HEX 数据长度必须为偶数，例如：01 03 00 00":
+    "HEX data must have an even length, e.g. 01 03 00 00",
+  "写入串口失败：{msg}": "Failed to write to the port: {msg}",
+  "等待响应超时（{ms}ms）": "Response timeout ({ms}ms)",
+  未收到返回数据: "No response received",
+  字节: "bytes",
+  不限: "unlimited",
+  请填写要发送的数据: "Enter the data to send",
+  已开启自动保存检测结果: "Auto-save turned on",
+  已关闭自动保存: "Auto-save turned off",
+  "将保存为{kind}，同时计入校准参照值":
+    "Will be saved as {kind} and counted in the calibration reference",
+
+  // ------------------------------------------------------------ 采集控制台
+  "发送数据（任意内容）": "Send data (any content)",
+  编码: "Encoding",
+  "ASCII / 文本": "ASCII / text",
+  "HEX 字节": "HEX bytes",
+  发送追加: "Append",
+  不追加: "None",
+  "响应超时(ms)": "Response timeout (ms)",
+  "定时间隔(ms)": "Interval (ms)",
+  定时次数: "Repeat count",
+  等待设备返回: "Wait for response",
+  自动保存检测结果: "Auto-save results",
+  日志仅显示解析帧: "Log parsed frames only",
+  发送并读取: "Send & read",
+  仅发送: "Send only",
+  停止: "Stop",
+  点击填入发送内容: "Click to fill the send box",
+  高级参数: "Advanced options",
+  "定时发送已启动：每 {interval}ms 一次，共 {times} 次":
+    "Timed sending started: every {interval}ms, {times} time(s)",
+  "定时发送已停止（成功 {ok} 次，失败 {fail} 次）":
+    "Timed sending stopped (sent {ok}, failed {fail})",
+  "开始定时发送：每 {interval}ms 发送 “{payload}”，次数 {times}":
+    "Timed sending started: “{payload}” every {interval}ms, {times} time(s)",
+  "定时发送结束：{reason}（成功 {ok} 次，失败 {fail} 次）":
+    "Timed sending finished: {reason} (sent {ok}, failed {fail})",
+  定时发送已完成: "Timed sending finished",
+  手动停止: "Manual stop",
+  重新开始: "restarted",
+  "串口不可用，定时发送已停止": "Port unavailable — timed sending stopped",
+
+  // ------------------------------------------------------------ 实时检测
+  实时数据流: "Live data stream",
+  暂停: "Pause",
+  继续: "Resume",
+  清空: "Clear",
+  导出日志: "Export log",
+  最近测量结果: "Latest result",
+  尚未收到数据: "No data received yet",
+  原始返回: "Raw response",
+  适配体空白参照: "Aptamer blank reference",
+  "净信号（扣除空白）": "Net signal (blank subtracted)",
+  换算浓度: "Concentration",
+  未校准: "Not calibrated",
+  未启用标准曲线: "Standard curve disabled",
+  样本检测: "Sample",
+  "空白（仅缓冲液）": "Blank (buffer only)",
+  "空白（适配体+染料）": "Blank (aptamer + dye)",
+  适配体空白: "Aptamer blank",
+  空白: "Blank",
+  样本: "Sample",
+  "备注 / 样本编号": "Note / sample ID",
+  保存到历史记录: "Save to history",
+  最近记录: "Recent records",
+  刷新: "Refresh",
+  暂无记录: "No records",
+  "暂无数值可保存，请先采集或手动填写数值":
+    "No value to save — collect data or type a value first",
+  数值格式无效: "Invalid number format",
+  "已保存：{text}": "Saved: {text}",
+  "接收时间 {time} · {port} · {length} 字节":
+    "Received {time} · {port} · {length} bytes",
+  "接收时间 {time} · {port} · {length} 字节（未解析到数值，可手动填写后保存）":
+    "Received {time} · {port} · {length} bytes (no numeric value parsed — you can type one before saving)",
+  手动录入数值: "Type a value manually",
+  "手动填写测量数值（无需串口）": "Measurement value (no serial needed)",
+  记录数值: "Record value",
+
+  // ------------------------------------------------------------ 空白校准
+  "校准流程：① 先测「空白」（仅缓冲液 / 空白孔）；② 再测「适配体+染料空白」（不加目标物，只加适配体与染料）。两步的均值会作为参照值保存，样本检测时自动扣除适配体空白参照值得到净信号。采集参数取自「检测」页的定时间隔 / 定时次数。":
+    "Workflow: ① measure the blank (buffer only / blank well); ② measure the aptamer + dye blank (no target, aptamer and dye only). The mean of each step is stored as the reference; samples have the aptamer blank subtracted to obtain the net signal. Sampling parameters come from the interval / repeat count on the Detect tab.",
+  "仅缓冲液 / 空白孔": "Buffer only / blank well",
+  "适配体 + 染料空白": "Aptamer + dye blank",
+  不加目标物: "No target",
+  参照值: "Reference",
+  均值: "Mean",
+  "CV(%)": "CV (%)",
+  样本数: "n",
+  最近值: "Latest",
+  定时采集: "Timed collect",
+  "采集 1 次": "Collect once",
+  清空该类: "Clear",
+  手动录入: "Manual entry",
+  保存: "Save",
+  采集进度: "Progress",
+  停止采集: "Stop",
+  "点击卡片上的「定时采集」按钮开始，次数与间隔取自「检测」页控制台":
+    "Tap “Timed collect” on a card to start; count and interval come from the console on the Detect tab",
+  校准返回数据: "Calibration data",
+  全部校准: "All",
+  仅空白: "Blank only",
+  仅适配体空白: "Aptamer blank only",
+  "导出 CSV": "Export CSV",
+  时间: "Time",
+  类型: "Type",
+  数值: "Value",
+  备注: "Note",
+  操作: "Action",
+  类别: "Category",
+  单位: "Unit",
+  "串口/波特率": "Port / baud",
+  来源: "Source",
+  串口: "Port",
+  发送内容: "Sent data",
+  暂无校准数据: "No calibration data",
+  删除: "Delete",
+  已有采集任务正在进行: "A collection task is already running",
+  "串口未连接，请先在「连接」页连接串口":
+    "Serial port not connected — connect it on the Connect tab first",
+  "已请求停止采集，将在当前一次发送结束后停止":
+    "Stop requested — it will stop after the current send finishes",
+  已删除校准记录: "Calibration record deleted",
+  暂无校准数据可导出: "No calibration data to export",
+  导出失败: "Export failed",
+  "采集中 {done}/{total}": "Collecting {done}/{total}",
+  "正在采集「{kind}」，成功 {ok} 次 / 失败 {fail} 次":
+    "Collecting “{kind}”: {ok} ok / {fail} failed",
+  "开始校准采集：{kind}，共 {total} 次，间隔 {interval}ms，发送 “{payload}”":
+    "Calibration collection started: {kind}, {total} run(s), interval {interval}ms, sending “{payload}”",
+  "第 {index} 次采集失败：{msg}": "Run {index} failed: {msg}",
+  "第 {index} 次采集未解析到数值：{raw}":
+    "Run {index}: no numeric value parsed: {raw}",
+  "校准采集 {index}/{total}": "Collection {index}/{total}",
+  "{kind}采集完成：n={n}，均值 {mean}，SD {sd}":
+    "{kind} collection finished: n={n}, mean {mean}, SD {sd}",
+  "{kind}采集完成：n={n}，均值 {mean}，SD {sd}（已手动中止）":
+    "{kind} collection finished (aborted): n={n}, mean {mean}, SD {sd}",
+  "{kind}采集完成，但没有解析到有效数值":
+    "{kind} collection finished, but no valid value was parsed",
+  "读取校准数据失败：{msg}": "Failed to read calibration data: {msg}",
+  "确定要清空「{kind}」的校准记录吗？":
+    "Clear all “{kind}” calibration records?",
+  "已清空 {n} 条校准记录": "Cleared {n} calibration record(s)",
+  "已导出 {n} 条校准记录：{file}": "Exported {n} calibration record(s): {file}",
+  "已保存校准数据：{value} {unit}": "Calibration record saved: {value} {unit}",
+
+  // ------------------------------------------------------------ 历史记录
+  历史检测记录: "Measurement history",
+  每页条数: "Per page",
+  "{n} 条/页": "{n} / page",
+  开始日期: "Start date",
+  结束日期: "End date",
+  全部类别: "All categories",
+  至: "to",
+  "备注 / 原始数据关键词": "Note / raw data keyword",
+  "50 条/页": "50 / page",
+  "100 条/页": "100 / page",
+  "200 条/页": "200 / page",
+  "500 条/页": "500 / page",
+  查询: "Query",
+  导出全部: "Export all",
+  清空筛选结果: "Clear filtered",
+  上一页: "Prev",
+  下一页: "Next",
+  筛选结果: "Filtered",
+  全部记录: "All records",
+  本页均值: "Page mean",
+  "本页 SD": "Page SD",
+  暂无符合条件的记录: "No matching records",
+  手动: "Manual",
+  定时: "Timed",
+  "共 {total} 条记录，每页 {limit} 条": "{total} record(s), {limit} per page",
+  已删除该条记录: "Record deleted",
+  当前筛选没有可导出的记录: "No matching records to export",
+  "已导出 {n} 条记录：{file}": "Exported {n} record(s): {file}",
+  "确定要清空「{label}」的检测记录吗？此操作不可撤销。":
+    "Clear all “{label}” measurement records? This cannot be undone.",
+  "已清空 {n} 条记录": "Cleared {n} record(s)",
+  "查询失败：{msg}": "Query failed: {msg}",
+  "读取失败：{msg}": "Load failed: {msg}",
+  筛选条件: "Filters",
+  记录列表: "Records",
+
+  // ------------------------------------------------------------ 设置
+  测量与换算: "Measurement & conversion",
+  信号单位: "Signal unit",
+  "校准参照窗口（最近 N 次均值）": "Calibration window (mean of last N)",
+  启用标准曲线换算浓度: "Enable standard curve",
+  "斜率 k": "Slope k",
+  "截距 b": "Intercept b",
+  浓度单位: "Concentration unit",
+  "浓度 = (净信号 − 截距 b) ÷ 斜率 k，其中净信号 = 测量值 − 适配体空白参照值。":
+    "Concentration = (net signal − b) ÷ k, where net signal = measured value − aptamer blank reference.",
+  连接默认值: "Connection defaults",
+  默认波特率: "Default baud rate",
+  "默认响应超时(ms)": "Default response timeout (ms)",
+  "默认空闲分帧(ms)": "Default idle gap (ms)",
+  保存设置: "Save settings",
+  恢复默认: "Restore defaults",
+  设置已保存: "Settings saved",
+  已恢复默认设置: "Default settings restored",
+  "确定要恢复默认设置吗？（不会删除历史数据）":
+    "Restore default settings? (History data will be kept.)",
+  数据存储: "Data storage",
+  数据库: "Database",
+  数据目录: "Data directory",
+  记录总数: "Total records",
+  已用空间: "Storage used",
+  打开数据目录: "Open data directory",
+  导出全部记录: "Export all records",
+  清空全部记录: "Clear all records",
+  "本地数据保存在浏览器 localStorage 中（常见上限约 5MB）。清理浏览器数据会丢失记录，重要数据请及时导出 CSV。":
+    "Data is stored in the browser's localStorage (usually limited to about 5MB). Clearing browser data will delete records — export important data as CSV regularly.",
+  关于: "About",
+  语言: "Language",
+  应用版本: "App version",
+  运行环境: "Runtime",
+  串口支持: "Serial support",
+  平台: "Platform",
+  支持: "Supported",
+  不支持: "Not supported",
+  "确定要清空全部检测记录与校准记录吗？此操作不可撤销。":
+    "Clear all measurement and calibration records? This cannot be undone.",
+  暂无记录可导出: "No records to export",
+  "已清空 {a} 条检测记录、{b} 条校准记录":
+    "Cleared {a} measurement(s) and {b} calibration record(s)",
+
+  // ------------------------------------------------------------ 日志
+  "日志已就绪，连接串口后开始记录数据":
+    "Log ready — data will be recorded once a port is connected",
+  日志已暂停: "Log paused",
+  日志已恢复: "Log resumed",
+  "日志切换为“仅显示解析帧”": "Log: parsed frames only",
+  "日志切换为“显示全部原始数据”": "Log: all raw data",
+  "日志为空，无需导出": "The log is empty — nothing to export",
+  "日志已导出：{file}": "Log exported: {file}",
+  日志为空: "Log is empty",
+  "<空>": "<empty>",
+
+  // ------------------------------------------------------------ 通用
+  确定: "OK",
+  取消: "Cancel",
+  关闭: "Close",
+  导出检测记录: "Export measurement records",
+  "CSV 文件": "CSV file",
+  文本文件: "Text file",
+  所有文件: "All files",
+  未知错误: "Unknown error",
+  重试: "Retry",
+  加载中: "Loading",
+  "本地存储写入失败（可能已超出容量上限）：{msg}":
+    "Failed to write local storage (quota may be exceeded): {msg}",
+  "就绪：请先添加并连接串口设备": "Ready — add and connect a serial port first",
+  "应用已就绪 · 手机版": "Ready · Mobile",
+  "导出失败：{msg}": "Export failed: {msg}",
+  "初始化失败：{msg}": "Initialization failed: {msg}",
+};
